@@ -35,11 +35,11 @@ contract('SupplyChain', function(accounts) {
     ///(9) 0xbd3ff2e3aded055244d66544c9c059fa0851da44
 
     console.log("ganache-cli accounts used here...")
-    console.log("Contract Owner: accounts[0] ", accounts[0])
-    console.log("Farmer: accounts[1] ", accounts[1])
-    console.log("Distributor: accounts[2] ", accounts[2])
-    console.log("Retailer: accounts[3] ", accounts[3])
-    console.log("Consumer: accounts[4] ", accounts[4])
+    console.log("Contract Owner: accounts[0] ", ownerID)
+    console.log("Farmer: accounts[1] ", originFarmerID)
+    console.log("Distributor: accounts[2] ", distributorID)
+    console.log("Retailer: accounts[3] ", retailerID)
+    console.log("Consumer: accounts[4] ", consumerID)
 
     // 1st Test
     it("Testing smart contract function harvestItem() that allows a farmer to harvest coffee", async() => {
@@ -49,19 +49,25 @@ contract('SupplyChain', function(accounts) {
         var eventEmitted = false
         
         // Watch the emitted event Harvested()
-        var event = supplyChain.Harvested()
-        await event.watch((err, res) => {
-            eventEmitted = true
-        })
+        // var event = supplyChain.Harvested()
+        // await event.watch((err, res) => {
+        //     eventEmitted = true
+        // })
+        // var event = 
+        supplyChain.Harvested({},
+            (err, res) => {
+                eventEmitted = true
+                //console.log("harvested called");
+            })
 
         // Mark an item as Harvested by calling function harvestItem()
         await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes)
-
         // Retrieve the just now saved item from blockchain by calling function fetchItem()
         const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
         const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc)
 
         // Verify the result set
+        //console.log(resultBufferOne);
         assert.equal(resultBufferOne[0], sku, 'Error: Invalid item SKU')
         assert.equal(resultBufferOne[1], upc, 'Error: Invalid item UPC')
         assert.equal(resultBufferOne[2], originFarmerID, 'Error: Missing or Invalid ownerID')
@@ -142,7 +148,9 @@ contract('SupplyChain', function(accounts) {
         
         
         // Watch the emitted event Sold()
-        var event = supplyChain.Sold()
+        var event = supplyChain.Sold({},(err,data)=>{
+            
+        });
         
 
         // Mark an item as Sold by calling function buyItem()
