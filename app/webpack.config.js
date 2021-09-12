@@ -3,10 +3,16 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: 'development',
-  entry: "./src/index.js",
+  entry: [ "./src/index.js"],
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "dist"),
+  },
+  module: {
+    rules: [{
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader']
+    },],
   },
   plugins: [
     new CopyWebpackPlugin([{ from: "./src/index.html", to: "index.html" }]),

@@ -312,7 +312,7 @@ contract SupplyChain {
         // Assign values to the 8 parameters
         Item memory i = items[_upc];
         itemSKU = i.sku;
-        itemUPC = i.upc;
+        itemUPC = _upc;
         ownerID = i.ownerID;
         originFarmerID = i.originFarmerID;
         originFarmName = i.originFarmName;
