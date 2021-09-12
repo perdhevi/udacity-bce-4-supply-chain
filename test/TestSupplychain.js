@@ -114,6 +114,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[0], sku, 'Error: Invalid item SKU')
         assert.equal(resultBufferOne[1], upc, 'Error: Invalid item UPC')
         assert.equal(resultBufferTwo[5], 1, 'Error: Invalid item State')
+        assert.equal(eventEmitted, true, 'Invalid event emitted')        
 
     })    
 
@@ -144,6 +145,8 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[0], sku, 'Error: Invalid item SKU')
         assert.equal(resultBufferOne[1], upc, 'Error: Invalid item UPC')
         assert.equal(resultBufferTwo[5], 2, 'Error: Invalid item State')        
+        assert.equal(eventEmitted, true, 'Invalid event emitted')        
+
     })    
 
     // 4th Test
@@ -176,6 +179,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[1], upc, 'Error: Invalid item UPC')
         assert.equal(resultBufferTwo[4], productPrice, 'Error: Invalid item price')        
         assert.equal(resultBufferTwo[5], 3, 'Error: Invalid item State')        
+        assert.equal(eventEmitted, true, 'Invalid event emitted')        
           
     })    
 
@@ -188,7 +192,7 @@ contract('SupplyChain', function(accounts) {
         
         
         // Watch the emitted event Sold()
-        var event = supplyChain.Sold({},(err,data)=>{
+        supplyChain.Sold({},(err,data)=>{
             eventEmitted = true
             //console.log("2. Event should be emitted Sold called");        
         });
@@ -211,6 +215,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferTwo[6], distributorID, 'Error: Invalid distributorID')
         assert.equal(resultBufferTwo[4], productPrice, 'Error: Invalid item price')        
         assert.equal(resultBufferTwo[5], 4, 'Error: Invalid item State')        
+        assert.equal(eventEmitted, true, 'Invalid event emitted')        
         
     })    
 
@@ -223,7 +228,7 @@ contract('SupplyChain', function(accounts) {
         
         
         // Watch the emitted event Shipped()
-        var event = supplyChain.Shipped({},(err,data)=>{
+        supplyChain.Shipped({},(err,data)=>{
             eventEmitted = true
             //console.log("2. Event should be emitted Shipped called");        
         });
@@ -245,18 +250,21 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferTwo[6], distributorID, 'Error: Invalid distributorID')
         assert.equal(resultBufferTwo[4], productPrice, 'Error: Invalid item price')        
         assert.equal(resultBufferTwo[5], 5, 'Error: Invalid item State')        
+        assert.equal(eventEmitted, true, 'Invalid event emitted')        
               
     })    
 
     // 7th Test
     it("Testing smart contract function receiveItem() that allows a retailer to mark coffee received", async() => {
         const supplyChain = await SupplyChain.deployed()
-        
+        supplyChain.addRetailer(retailerID);
+
+
         // Declare and Initialize a variable for event
         var eventEmitted;         
         
         // Watch the emitted event Received()
-        var event = supplyChain.Received({},(err,data)=>{
+        supplyChain.Received({},(err,data)=>{
             eventEmitted = true
             // console.log("2. Event should be emitted Shipped called");        
         });        
@@ -276,18 +284,19 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferTwo[6], distributorID, 'Error: Invalid distributorID')
         assert.equal(resultBufferTwo[4], productPrice, 'Error: Invalid item price')        
         assert.equal(resultBufferTwo[5], 6, 'Error: Invalid item State')        
+        assert.equal(eventEmitted, true, 'Invalid event emitted')        
          
     })    
 
     // 8th Test
     it("Testing smart contract function purchaseItem() that allows a consumer to purchase coffee", async() => {
         const supplyChain = await SupplyChain.deployed()
-        
+        supplyChain.addConsumer(consumerID);
         // Declare and Initialize a variable for event
         var eventEmitted;         
         
         // Watch the emitted event Purchased()
-        var event = supplyChain.Purchased({},(err,data)=>{
+        supplyChain.Purchased({},(err,data)=>{
             eventEmitted = true
             // console.log("2. Event should be emitted Shipped called");        
         });             
@@ -307,6 +316,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[2], consumerID, 'Error: Invalid Owner')
         assert.equal(resultBufferTwo[4], productPrice, 'Error: Invalid item price')        
         assert.equal(resultBufferTwo[5], 7, 'Error: Invalid item State')        
+        assert.equal(eventEmitted, true, 'Invalid event emitted')        
         
     })    
 

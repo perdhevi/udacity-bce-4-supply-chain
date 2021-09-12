@@ -1,7 +1,10 @@
 pragma solidity >=0.4.21 <0.7.0;
 
+import "../coffeeaccesscontrol/RetailerRole.sol";
+import "../coffeeaccesscontrol/ConsumerRole.sol";
+
 // Define a contract 'Supplychain'
-contract SupplyChain {
+contract SupplyChain is ConsumerRole, RetailerRole {
     // Define 'owner'
     address payable owner;
 
@@ -267,8 +270,8 @@ contract SupplyChain {
         public
         // Call modifier to check if upc has passed previous supply chain stage
         shipped(_upc)
-    // Access Control List enforced by calling Smart Contract / DApp
-
+        // Access Control List enforced by calling Smart Contract / DApp
+        onlyRetailer
     {
         // Update the appropriate fields - ownerID, retailerID, itemState
         items[_upc].ownerID = msg.sender;
@@ -284,7 +287,8 @@ contract SupplyChain {
         public
         // Call modifier to check if upc has passed previous supply chain stage
         received(_upc)
-    // Access Control List enforced by calling Smart Contract / DApp
+        // Access Control List enforced by calling Smart Contract / DApp
+        onlyConsumer
     {
         // Update the appropriate fields - ownerID, consumerID, itemState
         items[_upc].ownerID = msg.sender;
