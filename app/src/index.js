@@ -20,7 +20,7 @@ const App = {
     originFarmLatitude: null,
     originFarmLongitude: null,
     productNotes: null,
-    productPrice: 0,
+    productPrice: 1,
     distributorID: "0x0000000000000000000000000000000000000000",
     retailerID: "0x0000000000000000000000000000000000000000",
     consumerID: "0x0000000000000000000000000000000000000000",
@@ -75,6 +75,7 @@ const App = {
             try {
                 // Request account access
                 await window.ethereum.enable();
+                console.log("using default metamask")
             } catch (error) {
                 // User denied account access...
                 console.error("User denied account access")
@@ -137,7 +138,20 @@ const App = {
         //App.contracts.SupplyChain = this.meta.methods
         // get accounts
         const accounts = await web3.eth.getAccounts();
+        console.log("accounts in metamask", accounts);
+        const supplyChain = this.meta.methods;
         this.account = accounts[0];
+        const isRtl = await supplyChain.isRetailer(this.account).call();
+        if(!isRtl){
+            await this.meta.methods.addRetailer(App.metamaskAccountID)
+            .send({from:this.account, gasLimit:App.gasLimit});
+        }
+        const isCs = await supplyChain.isConsumer(this.account).call();
+        if(!isCs){
+            await this.meta.methods.addConsumer(App.metamaskAccountID)
+            .send({from:this.account, gasLimit:App.gasLimit});
+        }
+        console.log(isCs);
 
         //const { fetchEvents, fetchItemBufferOne , fetchItemBufferTwo } = this.meta.methods; 
         //App.FetchItemBufferOne();
@@ -216,7 +230,7 @@ const App = {
         // });
         App.upc = $('#upc').val();
         console.log('harvesting upc',App.upc);
-
+        App.originFarmerID = App.metamaskAccountID;
         this.meta.methods.harvestItem(
             App.upc, 
             App.metamaskAccountID, 
@@ -300,7 +314,7 @@ const App = {
         });        
     },
 
-    buyItem: function (event) {
+    buyItem: async function (event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
 
@@ -316,10 +330,15 @@ const App = {
         // }).catch(function(err) {
         //     console.log(err.message);
         // });
-        this.meta.methods.buyItem(App.upc)
-        .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
-            App.writeForm(result);
-            console.log('sellItem ',result);
+        this.meta.methods.isRetailer(App.account).call().then((result) => {
+            console.log("app account is retailer:", result);
+            if(result){
+                this.meta.methods.buyItem(App.upc)
+                .send({from:App.account, value:2, gasLimit:App.gasLimit}).then(function(result) {
+                    App.writeForm(result);
+                    console.log('sellItem ',result);
+                })
+            }
         });        
 
 
@@ -341,7 +360,7 @@ const App = {
         //     console.log(err.message);
         // });
         this.meta.methods.shipItem(App.upc)
-        .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
+        .send({from:App.account, gasLimit:App.gasLimit}).then(function(result) {
             App.writeForm(result);
             console.log('shipItem ',result);
         });           
@@ -363,7 +382,7 @@ const App = {
         //     console.log(err.message);
         // });
         this.meta.methods.receiveItem(App.upc)
-        .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
+        .send({from:App.account, gasLimit:App.gasLimit}).then(function(result) {
             App.writeForm(result);
             console.log('receiveItem ',result);
         });           
@@ -386,7 +405,7 @@ const App = {
         //     console.log(err.message);
         // });
         this.meta.methods.purchaseItem(App.upc)
-        .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
+        .send({from:App.account, gasLimit:App.gasLimit}).then(function(result) {
             App.writeForm(result);
             console.log('purchaseItem ',result);
         });           
