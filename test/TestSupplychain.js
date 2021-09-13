@@ -270,7 +270,7 @@ contract('SupplyChain', function(accounts) {
         });        
 
         // Mark an item as Sold by calling function buyItem()
-        await supplyChain.receiveItem(upc, {from:accounts[0]});
+        await supplyChain.receiveItem(upc, {from:retailerID});
 
         // Retrieve the just now saved item from blockchain by calling function fetchItem()
         const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)

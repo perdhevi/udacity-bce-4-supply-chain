@@ -6,7 +6,7 @@ import "../coffeeaccesscontrol/ConsumerRole.sol";
 // Define a contract 'Supplychain'
 contract SupplyChain is ConsumerRole, RetailerRole {
     // Define 'owner'
-    address payable owner;
+    address payable _owner;
 
     // Define a variable called 'upc' for Universal Product Code (UPC)
     uint256 upc;
@@ -66,7 +66,7 @@ contract SupplyChain is ConsumerRole, RetailerRole {
 
     // Define a modifer that checks to see if msg.sender == owner of the contract
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == _owner);
         _;
     }
 
@@ -135,15 +135,15 @@ contract SupplyChain is ConsumerRole, RetailerRole {
     // and set 'sku' to 1
     // and set 'upc' to 1
     constructor() public payable {
-        owner = msg.sender;
+        _owner = msg.sender;
         sku = 1;
         upc = 1;
     }
 
     // Define a function 'kill' if required
     function kill() public {
-        if (msg.sender == owner) {
-            selfdestruct(owner);
+        if (msg.sender == _owner) {
+            selfdestruct(_owner);
         }
     }
 
