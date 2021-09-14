@@ -12,7 +12,7 @@ The flow is the coffee bean is being tracked from Farmer, Distributor, Retail an
 
 - I've added the @truffle/hdwallet-provider library for deployment
 
-## Program version numbers (This information will help your reviewer troubleshoot your project if any issues arise):
+## Program version numbers 
 
 - Truffle v5.4.7 (core: 5.4.7)
 - Solidity v0.5.16 (solc-js)
@@ -22,3 +22,16 @@ The flow is the coffee bean is being tracked from Farmer, Distributor, Retail an
 ## Notes
 
 the deployment log is located in \docs\log
+
+## Diagrams
+### Activity
+![activity](https://github.com/perdhevi/udacity-bce-4-supply-chain/blob/main/docs/Activity.drawio.png?raw=true)
+
+### Sequence
+![sequence](https://github.com/perdhevi/udacity-bce-4-supply-chain/blob/main/docs/sequence.drawio.png?raw=true)
+
+### State
+![state](https://github.com/perdhevi/udacity-bce-4-supply-chain/blob/main/docs/state.drawio.png?raw=true)
+
+### Class
+![class](https://github.com/perdhevi/udacity-bce-4-supply-chain/blob/main/docs/class.drawio.png?raw=true)
