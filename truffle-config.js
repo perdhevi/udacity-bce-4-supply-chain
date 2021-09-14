@@ -24,6 +24,8 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
+const HDWallet = require('truffle-hdwallet-provider');
+const mnemonic = process.env.RINKEBY_MNEMONIC;
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -72,7 +74,10 @@ module.exports = {
       // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     // },
-
+    rinkeby:{
+      provider: () => new HDWallet(mnemonic, 'https://rinkeby.infura.io/v3/d778f995344748f2a4c06c91d3bf90eb'),
+      network_id: 4,
+    }
     // Useful for private networks
     // private: {
       // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
