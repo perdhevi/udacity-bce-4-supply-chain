@@ -143,7 +143,12 @@ const App = {
             await this.meta.methods.addConsumer(App.metamaskAccountID)
             .send({from:this.account, gasLimit:App.gasLimit});
         }
-        console.log(isCs);
+        //set initial user for contract
+        $("#originFarmerID").val(this.account);
+        $("#distributorID").val(this.account);
+        
+        $("#retailerID").val(this.account);
+        $("#consumerID").val(this.account);        
 
         //App.fetchItemBufferOne();
         //App.fetchItemBufferTwo();
@@ -194,6 +199,12 @@ const App = {
                 break;
             case 10:
                 return await App.fetchItemBufferTwo(event);
+                break;
+            case 21:
+                return await App.registerRetailer(event);
+                break;
+            case 22:
+                return await App.registerConsumer(event);
                 break;
             }
     },
@@ -267,15 +278,20 @@ const App = {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
 
+        this.getMetaskAccountID();
+
         App.upc = $('#upc').val();
+        App.retailerID = $("#retailerID").val();
         const buyPrice = 2;
         console.log('buyItem upc',App.upc);
+        console.log('retailerID', App.retailerID);
 
-        this.meta.methods.isRetailer(App.account).call().then((result) => {
+
+        this.meta.methods.isRetailer(App.retailerID).call().then((result) => {
             console.log("app account is retailer:", result);
             if(result){
                 this.meta.methods.buyItem(App.upc)
-                .send({from:App.account, value:buyPrice, gasLimit:App.gasLimit}).then(function(result) {
+                .send({from:App.metamaskAccountID, value:buyPrice, gasLimit:App.gasLimit}).then(function(result) {
                     App.writeForm(result);
                     console.log('sellItem ',result);
                 })
@@ -290,6 +306,8 @@ const App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.upc = $('#upc').val();
+        App.consumerID = $("#consumerID").val();        
+
         console.log('shipItem upc',App.upc);
 
         this.meta.methods.shipItem(App.upc)
@@ -304,10 +322,11 @@ const App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.upc = $('#upc').val();
+        App.retailerID = $("#retailerID").val();
         console.log('receiveItem upc',App.upc);
 
         this.meta.methods.receiveItem(App.upc)
-        .send({from:App.account, gasLimit:App.gasLimit}).then(function(result) {
+        .send({from:App.retailerID, gasLimit:App.gasLimit}).then(function(result) {
             App.writeForm(result);
             console.log('receiveItem ',result);
         });           
@@ -319,16 +338,46 @@ const App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.upc = $('#upc').val();
+        App.consumerID = $("#consumerID").val();
         console.log('purchaseItem upc',App.upc);
         
         this.meta.methods.purchaseItem(App.upc)
-        .send({from:App.account, gasLimit:App.gasLimit}).then(function(result) {
+        .send({from:App.consumerID, gasLimit:App.gasLimit}).then(function(result) {
             App.writeForm(result);
             console.log('purchaseItem ',result);
         });           
 
 
     },
+
+    registerRetailer: function (event){
+        event.preventDefault();
+        App.retailerID = $("#retailerID").val();
+        App.getMetaskAccountID();
+
+        console.log(App.retailerID)
+        console.log(App.metamaskAccountID)
+        this.meta.methods.addRetailer(App.retailerID)
+        .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
+            App.writeForm(result);
+            console.log('purchaseItem ',result);
+        });                   
+    },
+
+    registerConsumer: function (event){
+        event.preventDefault();
+
+        App.consumerID = $("#consumerID").val();
+
+        App.getMetaskAccountID();
+
+        this.meta.methods.addConsumer(consumerID)
+        .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
+            App.writeForm(result);
+            console.log('purchaseItem ',result);
+        });                   
+    },
+
 
     fetchItemBufferOne: async function () {
     //   event.preventDefault();
