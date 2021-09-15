@@ -350,38 +350,44 @@ const App = {
 
     },
 
-    registerRetailer: function (event){
+    registerRetailer: async function (event){
         event.preventDefault();
         App.retailerID = $("#retailerID").val();
-        App.getMetaskAccountID();
+        const alreadyRegistered = await  this.meta.methods.isRetailer(App.retailerID).call();
+        if(!alreadyRegistered){
+            App.getMetaskAccountID();
 
-        console.log(App.retailerID)
-        console.log(App.metamaskAccountID)
-        this.meta.methods.addRetailer(App.retailerID)
-        .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
-            App.writeForm(result);
-            console.log('purchaseItem ',result);
-        });                   
+            this.meta.methods.addRetailer(App.retailerID)
+            .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
+                App.writeForm(result);
+                console.log('purchaseItem ',result);
+            });                   
+        }else{
+            window.alert("Account "+ App.retailerID + " already a retailer");
+        }
     },
 
-    registerConsumer: function (event){
+    registerConsumer: async function (event){
         event.preventDefault();
 
         App.consumerID = $("#consumerID").val();
 
-        App.getMetaskAccountID();
 
-        this.meta.methods.addConsumer(consumerID)
-        .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
-            App.writeForm(result);
-            console.log('purchaseItem ',result);
-        });                   
+        const alreadyRegistered = await  this.meta.methods.isConsumer(App.consumerID).call();
+        if(!alreadyRegistered){
+            App.getMetaskAccountID();
+            this.meta.methods.addConsumer(App.consumerID)
+            .send({from:App.metamaskAccountID, gasLimit:App.gasLimit}).then(function(result) {
+                App.writeForm(result);
+                console.log('purchaseItem ',result);
+            });                   
+        }else{
+            window.alert("Account "+ App.consumerID + " already a consumer");
+        }
     },
 
 
     fetchItemBufferOne: async function () {
-    //   event.preventDefault();
-    //    var processId = parseInt($(event.target).data('id'));
         App.upc = $('#upc').val();
         console.log('upc',App.upc);
         const { fetchItemBufferOne  } = this.meta.methods; 
@@ -391,8 +397,6 @@ const App = {
     },
 
     fetchItemBufferTwo: function () {
-    ///    event.preventDefault();
-    ///    var processId = parseInt($(event.target).data('id'));
         App.upc = $('#upc').val();
         console.log('upc',App.upc);
         const { fetchItemBufferTwo  } = this.meta.methods;                         

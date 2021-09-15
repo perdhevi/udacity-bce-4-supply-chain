@@ -24,7 +24,7 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
-const HDWallet = require('truffle-hdwallet-provider');
+const HDWallet = require('@truffle/hdwallet-provider');
 const mnemonic = process.env.RINKEBY_MNEMONIC;
 module.exports = {
   /**
